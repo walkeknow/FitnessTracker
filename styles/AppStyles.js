@@ -1,9 +1,15 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
+    
+    body: {
+     flex: 1,
+     backgroundColor: 'white',
+    },
     sectionContainer: {
         marginTop: 32,
         paddingHorizontal: 24,
+        backgroundColor: 'white'
     },
     sectionTitle: {
         fontSize: 24,

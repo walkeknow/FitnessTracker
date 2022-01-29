@@ -131,6 +131,7 @@ const HealthStats = ({ parameter, value }) => {
 const App: () => Node = () => {
   const backgroundStyle = {
     backgroundColor: Colors.lighter,
+    flex: 1,
   };
   const [dataObj, setDataObj] = useState();
 
@@ -139,12 +140,8 @@ const App: () => Node = () => {
       <StatusBar barStyle={'dark-content'} />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: Colors.white,
-          }}>
+        contentContainerStyle={styles.body}>
+        <View>
           <Section title="Fitbit Demo">Fitbit stats fetched from API:</Section>
           <Pressable
             onPress={() => OAuth(config.client_id, getData, setDataObj)}

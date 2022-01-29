@@ -64,7 +64,7 @@ static void InitializeFlipper(UIApplication *application) {
           options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
 return [RCTLinkingManager application:app openURL:url options:options];
-}    
+}
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
