@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import type {Node} from 'react';
+import React, { useEffect, useState } from 'react';
+import type { Node } from 'react';
 import qs from 'qs';
 import config from './config.js';
 import {
@@ -14,6 +14,8 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+
+import styles from './styles/AppStyles';
 
 import {
   Colors,
@@ -64,7 +66,7 @@ async function getData(access_token, setDataObj) {
     `https://api.fitbit.com/1/user/-/activities/date/${today}.json`,
     `https://api.fitbit.com/1/user/-/body/log/weight/date/${today}/30d.json`,
     `https://api.fitbit.com/1.2/user/-/sleep/date/${today}.json`,
-    `https://api.fitbit.com/1/user/-/body/log/weight/goal.json`,
+    `https://api.fitbit.com/1/user/-/body/log/weight/goal.json`
   ];
 
   try {
@@ -81,35 +83,46 @@ async function getData(access_token, setDataObj) {
       'Calories Burnt Today': responsesJson[1]?.summary?.caloriesOut ?? 0,
       'Weight Goal (kg)': responsesJson[4]?.goal?.weight ?? 0,
       'Weight (kg)': responsesJson[2]?.weight?.[0]?.weight ?? 0,
-      'Total Hours in Bed Today':
-        (responsesJson[3]?.sleep?.[0]?.timeInBed / 60).toFixed(1) ?? 0,
-      'Minutes Awake':
-        responsesJson[3]?.sleep?.[0]?.levels?.summary?.wake?.minutes ?? 0,
-      'Minutes of Light Sleep':
-        responsesJson[3]?.sleep?.[0]?.levels?.summary?.light?.minutes ?? 0,
-      'Minutes of Deep Sleep':
-        responsesJson[3]?.sleep?.[0]?.levels?.summary?.deep?.minutes ?? 0,
-      'Minutes of Rem Sleep':
-        responsesJson[3]?.sleep?.[0]?.levels?.summary?.rem?.minutes ?? 0,
+      'Total Hours in Bed Today': (responsesJson[3]?.sleep?.[0]?.timeInBed / 60).toFixed(1) ?? 0,
+      'Minutes Awake': responsesJson[3]?.sleep?.[0]?.levels?.summary?.wake?.minutes ?? 0,
+      'Minutes of Light Sleep': responsesJson[3]?.sleep?.[0]?.levels?.summary?.light?.minutes ?? 0,
+      'Minutes of Deep Sleep': responsesJson[3]?.sleep?.[0]?.levels?.summary?.deep?.minutes ?? 0,
+      'Minutes of Rem Sleep': responsesJson[3]?.sleep?.[0]?.levels?.summary?.rem?.minutes ?? 0,
     });
   } catch (error) {
     console.error('Error: ', error);
   }
 }
 
-const Section = ({children, title}): Node => {
+const Section = ({ children, title }): Node => {
   return (
     <View style={styles.sectionContainer}>
-      <Text>{title}</Text>
-      <Text>{children}</Text>
+      <Text
+        style={[
+          styles.sectionTitle,
+          {
+            color: Colors.white,
+          },
+        ]}>
+        {title}
+      </Text>
+      <Text
+        style={[
+          styles.sectionDescription,
+          {
+            color: Colors.dark,
+          },
+        ]}>
+        {children}
+      </Text>
     </View>
   );
 };
 
-const HealthStats = ({parameter, value}) => {
+const HealthStats = ({ parameter, value }) => {
   return (
-    <View>
-      <Text>{`${parameter}: `}</Text>
+    <View style={styles.row}>
+      <Text style={styles.label}>{`${parameter}: `}</Text>
       <Text>{value}</Text>
     </View>
   );
@@ -134,10 +147,11 @@ const App: () => Node = () => {
           }}>
           <Section title="Fitbit Demo">Fitbit stats fetched from API:</Section>
           <Pressable
-            onPress={() => OAuth(config.client_id, getData, setDataObj)}>
-            <Text>Integrate Fitbit</Text>
+            onPress={() => OAuth(config.client_id, getData, setDataObj)}
+            style={styles.button}>
+            <Text style={styles.buttonText}>Integrate Fitbit</Text>
           </Pressable>
-          <View>
+          <View style={styles.statList}>
             {dataObj &&
               Object.entries(dataObj).map(([k, v]) => (
                 <HealthStats key={k} parameter={k} value={v} />
@@ -148,12 +162,5 @@ const App: () => Node = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-});
 
 export default App;
