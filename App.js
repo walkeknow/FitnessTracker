@@ -1,30 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import type { Node } from 'react';
+import moment from 'moment';
 import qs from 'qs';
-import config from './config.js';
+import type {Node} from 'react';
+import React, {useState} from 'react';
 import {
-  Button,
   Linking,
   Pressable,
   SafeAreaView,
   ScrollView,
   StatusBar,
-  StyleSheet,
   Text,
-  useColorScheme,
   View,
 } from 'react-native';
-
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import config from './config.js';
 import styles from './styles/AppStyles';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import moment from 'moment';
 
 function OAuth(client_id, getData, setDataObj) {
   const subscription = Linking.addEventListener('url', handleUrl);
@@ -66,7 +55,7 @@ async function getData(access_token, setDataObj) {
     `https://api.fitbit.com/1/user/-/activities/date/${today}.json`,
     `https://api.fitbit.com/1/user/-/body/log/weight/date/${today}/30d.json`,
     `https://api.fitbit.com/1.2/user/-/sleep/date/${today}.json`,
-    `https://api.fitbit.com/1/user/-/body/log/weight/goal.json`
+    `https://api.fitbit.com/1/user/-/body/log/weight/goal.json`,
   ];
 
   try {
@@ -76,25 +65,34 @@ async function getData(access_token, setDataObj) {
     const responsesJson = await Promise.all(responses.map(resp => resp.json()));
     console.log('RESPONSE', responsesJson);
     console.log('HEARTRESP', responsesJson[3]?.sleep?.[0]?.levels);
+    const weightGoal = responsesJson[4]?.goal?.weight;
+    const weight = responsesJson[2]?.weight?.[0]?.weight;
+    const totalHoursInBed = responsesJson[3]?.sleep?.[0]?.timeInBed;
     setDataObj({
       'Daily Step Goal': responsesJson[1]?.goals?.steps ?? 0,
       'Steps Taken Today': responsesJson[1]?.summary?.steps ?? 0,
       'Total Calories Burnt': responsesJson[1]?.goals?.caloriesOut ?? 0,
       'Calories Burnt Today': responsesJson[1]?.summary?.caloriesOut ?? 0,
-      'Weight Goal (pounds)': ((responsesJson[4]?.goal?.weight) * 2.2).toFixed(1) ?? 0,
-      'Weight (pounds)': ((responsesJson[2]?.weight?.[0]?.weight) * 2.2).toFixed(1) ?? 0,
-      'Total Hours in Bed Today': (responsesJson[3]?.sleep?.[0]?.timeInBed / 60).toFixed(1) ?? 0,
-      'Minutes Awake': responsesJson[3]?.sleep?.[0]?.levels?.summary?.wake?.minutes ?? 0,
-      'Minutes of Light Sleep': responsesJson[3]?.sleep?.[0]?.levels?.summary?.light?.minutes ?? 0,
-      'Minutes of Deep Sleep': responsesJson[3]?.sleep?.[0]?.levels?.summary?.deep?.minutes ?? 0,
-      'Minutes of Rem Sleep': responsesJson[3]?.sleep?.[0]?.levels?.summary?.rem?.minutes ?? 0,
+      'Weight Goal (pounds)': weightGoal ? (weightGoal * 2.2).toFixed(1) : 0,
+      'Weight (pounds)': weight ? (weight * 2.2).toFixed(1) : 0,
+      'Total Hours in Bed Today': totalHoursInBed
+        ? (totalHoursInBed / 60).toFixed(1)
+        : 0,
+      'Minutes Awake':
+        responsesJson[3]?.sleep?.[0]?.levels?.summary?.wake?.minutes ?? 0,
+      'Minutes of Light Sleep':
+        responsesJson[3]?.sleep?.[0]?.levels?.summary?.light?.minutes ?? 0,
+      'Minutes of Deep Sleep':
+        responsesJson[3]?.sleep?.[0]?.levels?.summary?.deep?.minutes ?? 0,
+      'Minutes of Rem Sleep':
+        responsesJson[3]?.sleep?.[0]?.levels?.summary?.rem?.minutes ?? 0,
     });
   } catch (error) {
     console.error('Error: ', error);
   }
 }
 
-const Section = ({ children, title }): Node => {
+const Section = ({children, title}): Node => {
   return (
     <View style={styles.sectionContainer}>
       <Text
