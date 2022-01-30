@@ -81,8 +81,8 @@ async function getData(access_token, setDataObj) {
       'Steps Taken Today': responsesJson[1]?.summary?.steps ?? 0,
       'Total Calories Burnt': responsesJson[1]?.goals?.caloriesOut ?? 0,
       'Calories Burnt Today': responsesJson[1]?.summary?.caloriesOut ?? 0,
-      'Weight Goal (kg)': responsesJson[4]?.goal?.weight ?? 0,
-      'Weight (kg)': responsesJson[2]?.weight?.[0]?.weight ?? 0,
+      'Weight Goal (pounds)': ((responsesJson[4]?.goal?.weight) * 2.2).toFixed(1) ?? 0,
+      'Weight (pounds)': ((responsesJson[2]?.weight?.[0]?.weight) * 2.2).toFixed(1) ?? 0,
       'Total Hours in Bed Today': (responsesJson[3]?.sleep?.[0]?.timeInBed / 60).toFixed(1) ?? 0,
       'Minutes Awake': responsesJson[3]?.sleep?.[0]?.levels?.summary?.wake?.minutes ?? 0,
       'Minutes of Light Sleep': responsesJson[3]?.sleep?.[0]?.levels?.summary?.light?.minutes ?? 0,
@@ -119,7 +119,7 @@ const Section = ({ children, title }): Node => {
   );
 };
 
-const HealthStats = ({ parameter, value }) => {
+const HealthStats = ({parameter, value}) => {
   return (
     <View style={styles.row}>
       <Text style={styles.label}>{`${parameter}: `}</Text>

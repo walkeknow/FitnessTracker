@@ -1,10 +1,9 @@
 import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
-    
     body: {
-     flex: 1,
-     backgroundColor: 'white',
+        flex: 1,
+        backgroundColor: 'white',
     },
     sectionContainer: {
         marginTop: 32,
@@ -25,7 +24,6 @@ const styles = StyleSheet.create({
     },
     row: {
         margin: 10,
-        flex: 1,
         flexDirection: 'row',
     },
     label: {
@@ -49,6 +47,6 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginHorizontal: 18,
     },
-})
+});
 
-export default styles
+export default styles;
